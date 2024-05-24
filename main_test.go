@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"testing"
 )
 
@@ -23,5 +24,33 @@ func TestSanitizeImageName(t *testing.T) {
 				t.Errorf("sanitizeImageName(%q) = %q; want %q", test.input, result, test.expected)
 			}
 		})
+	}
+}
+
+func TestGetFileSize(t *testing.T) {
+	// Test case 1: Test for an existing empty file
+	emptyFileName := "empty_test_file"
+	f, err := os.Create(emptyFileName)
+	if err != nil {
+		t.Fatalf("Failed to create empty test file: %v", err)
+	}
+	f.Close()
+	defer os.Remove(emptyFileName) // Clean up
+
+	size, err := getFileSize(emptyFileName)
+	if err != nil {
+		t.Errorf("Expected no error, got %v", err)
+	}
+	if size != 0 {
+		t.Errorf("Expected size 0, got %d", size)
+	}
+
+	// Test case 2: Test for the existing main.go file
+	size, err = getFileSize("main.go")
+	if err != nil {
+		t.Errorf("Expected no error, got %v", err)
+	}
+	if size == 0 {
+		t.Errorf("Expected size greater than 0, got %d", size)
 	}
 }
