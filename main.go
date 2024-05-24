@@ -119,6 +119,12 @@ func getSupportedArchitectures(image string) ([]string, error) {
 	for _, m := range manifest.Manifests {
 		architectures = append(architectures, m.Platform.Architecture)
 	}
+
+	// Ensure at least "amd64" is included if no architectures were found
+	if len(architectures) == 0 {
+		architectures = []string{"amd64"}
+	}
+
 	return architectures, nil
 }
 
